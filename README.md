@@ -53,6 +53,18 @@ Run `driftwatch --help` to see all available commands and options.
 
 ---
 
+## Output Formats
+
+Use `--output` to control how results are displayed:
+
+| Format  | Flag               | Description                        |
+|---------|--------------------|------------------------------------|
+| table   | `--output table`   | Human-readable table (default)     |
+| json    | `--output json`    | Machine-readable JSON              |
+| quiet   | `--output quiet`   | Exit code only, no output          |
+
+---
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
