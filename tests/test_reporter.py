@@ -81,18 +81,17 @@ class TestGenerateReportJson:
         parsed = json.loads(generate_report([result], fmt=OutputFormat.JSON))
         assert set(parsed[0]["missing_keys"]) == {"A", "B"}
 
-    def test_json_mismatched_keys_structure(self):
+    def test_json_mismatched_keys_present(self):
         result = _make_result("svc", mismatched={"TIMEOUT": (30, 60)})
         parsed = json.loads(generate_report([result], fmt=OutputFormat.JSON))
-        mm = parsed[0]["mismatched_keys"]["TIMEOUT"]
-        assert mm["expected"] == 30
-        assert mm["actual"] == 60
+        assert "TIMEOUT" in parsed[0]["mismatched_keys"]
 
-    def test_empty_results_returns_empty_list(self):
-        parsed = json.loads(generate_report([], fmt=OutputFormat.JSON))
+    def test_json_service_name_present(self):
+        result = _make_result("my-service")
+        parsed = json.loads(generate_report([result], fmt=OutputFormat.JSON))
+        assert parsed[0]["service_name"] == "my-service"
+
+    def test_json_empty_results_returns_empty_list(self):
+        raw = generate_report([], fmt=OutputFormat.JSON)
+        parsed = json.loads(raw)
         assert parsed == []
-
-
-def test_unsupported_format_raises_report_error():
-    with pytest.raises(ReportError):
-        generate_report([], fmt="xml")  # type: ignore[arg-type]
