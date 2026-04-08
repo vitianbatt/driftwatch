@@ -5,6 +5,12 @@ env:
   LOG_LEVEL: INFO
   DB_HOST: db.internal
   FEATURE_FLAG: "true"
+  DB_PORT: "5432"
+  DB_NAME: authdb
 resources:
   cpu: "500m"
   memory: "256Mi"
+healthcheck:
+  path: /health
+  interval: 30s
+  timeout: 5s
