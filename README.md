@@ -58,10 +58,30 @@ Run `driftwatch --help` to see all available commands and options.
 Use `--output` to control how results are displayed:
 
 | Format  | Flag               | Description                        |
-|---------|--------------------|------------------------------------|
+|---------|--------------------|---------------------------------|
 | table   | `--output table`   | Human-readable table (default)     |
 | json    | `--output json`    | Machine-readable JSON              |
 | quiet   | `--output quiet`   | Exit code only, no output          |
+
+---
+
+## Ignoring Fields
+
+To suppress known or expected differences, use a `.driftigore` file in your project root or pass `--ignore` flags directly:
+
+```bash
+driftwatch check --spec services/ --target production --ignore env.DEBUG --ignore metadata.annotations
+```
+
+Or define ignored fields in `.driftigore`:
+
+```
+env.DEBUG
+metadata.annotations
+metadata.labels.deploy-timestamp
+```
+
+Ignored fields are excluded from drift detection and will not affect the exit code.
 
 ---
 
