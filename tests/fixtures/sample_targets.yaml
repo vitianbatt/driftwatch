@@ -1,0 +1,12 @@
+targets:
+  - name: auth-service
+    spec_path: tests/fixtures/sample_spec.yaml
+    live_url: http://auth-service.internal/config
+    timeout: 3.0
+    headers:
+      X-Internal-Token: test-token
+
+  - name: billing-service
+    spec_path: tests/fixtures/sample_spec.yaml
+    live_url: http://billing-service.internal/config
+    timeout: 5.0
