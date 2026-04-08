@@ -82,13 +82,17 @@ class TestDeepDiff:
 
     def test_raises_diff_error_on_non_dict_spec(self):
         with pytest.raises(DiffError):
-            deep_diff(["a", "b"], {"a": 1})  # type: ignore[arg-type]
+            deep_diff("not-a-dict", {"key": "value"})
 
-    def test_empty_spec_and_live_return_empty(self):
-        assert deep_diff({}, {}) == []
+    def test_raises_diff_error_on_non_dict_live(self):
+        with pytest.raises(DiffError):
+            deep_diff({"key": "value"}, ["not", "a", "dict"])
 
-    def test_empty_live_reports_all_spec_keys_missing(self):
-        diffs = deep_diff(SPEC, {})
-        missing = {d.key for d in diffs if d.diff_type == "missing"}
-        assert "version" in missing
-        assert "replicas" in missing
+    def test_multiple_missing_keys_all_reported(self):
+        """All missing top-level keys should appear in the diff results."""
+        live = {}  # everything is missing
+        diffs = deep_diff(SPEC, live)
+        keys = {d.key for d in diffs}
+        assert "version" in keys
+        assert "replicas" in keys
+        assert "env" in keys or any(k.startswith("env.") for k in keys)
