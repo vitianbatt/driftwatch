@@ -69,3 +69,20 @@ def deep_diff(
                 diffs.append(FieldDiff(key=full_key, expected=None, actual=live[key], diff_type="extra"))
 
     return diffs
+
+
+def format_diffs(diffs: list[FieldDiff]) -> str:
+    """Format a list of FieldDiff objects into a human-readable summary string.
+
+    Args:
+        diffs: The list of :class:`FieldDiff` instances to format.
+
+    Returns:
+        A multi-line string summarising all differences, or a message indicating
+        no differences were found.
+    """
+    if not diffs:
+        return "No differences found."
+    lines = [f"{len(diffs)} difference(s) found:"]
+    lines.extend(str(d) for d in diffs)
+    return "\n".join(lines)
