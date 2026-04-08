@@ -1,0 +1,23 @@
+# Fixture describing a list of synthetic drift results used in filter tests.
+# Each entry mirrors the fields of DriftResult.
+
+results:
+  - service_name: auth-service
+    missing_keys: ["timeout", "retries", "log_level", "max_connections", "tls_enabled", "cert_path"]
+    extra_keys: []
+    changed_values: {}
+
+  - service_name: billing-service
+    missing_keys: ["currency"]
+    extra_keys: ["debug_mode"]
+    changed_values: {"region": {"spec": "us-east-1", "live": "eu-west-1"}}
+
+  - service_name: notification-service
+    missing_keys: []
+    extra_keys: []
+    changed_values: {}
+
+  - service_name: auth-proxy
+    missing_keys: ["ssl_cert"]
+    extra_keys: []
+    changed_values: {}
