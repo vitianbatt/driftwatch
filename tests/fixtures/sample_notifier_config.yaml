@@ -1,0 +1,4 @@
+channel: webhook
+webhook_url: "http://alerts.example.com/hooks/driftwatch"
+min_severity: medium
+timeout: 10
