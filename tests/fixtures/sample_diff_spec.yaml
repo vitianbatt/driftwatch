@@ -1,0 +1,10 @@
+service: auth-service
+version: "2.1.0"
+replicas: 3
+env:
+  LOG_LEVEL: INFO
+  DB_HOST: db.internal
+  FEATURE_FLAG: "true"
+resources:
+  cpu: "500m"
+  memory: "256Mi"
