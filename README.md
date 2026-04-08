@@ -43,6 +43,12 @@ worker         env.LOG_LEVEL      INFO            DEBUG           DRIFT
 cache          replicas           2               2               OK
 ```
 
+Exit code is `1` if any drift is detected, `0` if all services match their specs. This makes `driftwatch` easy to integrate into CI pipelines:
+
+```bash
+driftwatch check --spec services/ --target production || echo "Drift detected — review before deploying"
+```
+
 Run `driftwatch --help` to see all available commands and options.
 
 ---
