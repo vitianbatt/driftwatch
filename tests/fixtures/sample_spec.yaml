@@ -1,0 +1,16 @@
+service: payment-api
+version: "1.4.2"
+replicas: 3
+image: ghcr.io/acme/payment-api:1.4.2
+env:
+  LOG_LEVEL: info
+  DB_POOL_SIZE: "10"
+  FEATURE_NEW_CHECKOUT: "false"
+resources:
+  cpu: "500m"
+  memory: "256Mi"
+ports:
+  - 8080
+health_check:
+  path: /healthz
+  interval_seconds: 30
