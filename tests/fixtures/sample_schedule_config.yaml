@@ -1,0 +1,5 @@
+interval_seconds: 30
+max_runs: 3
+tags:
+  - production
+  - api
