@@ -1,0 +1,6 @@
+service: auth-service
+version: "1.3.0"
+replicas: 5
+environment: staging
+port: 9090
+unknown_field: injected-at-runtime
