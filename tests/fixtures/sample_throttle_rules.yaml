@@ -1,0 +1,9 @@
+# Sample throttle rules for driftwatch tests
+default_interval_seconds: 300
+rules:
+  - service: auth-service
+    min_interval_seconds: 60
+  - service: billing-service
+    min_interval_seconds: 120
+  - service: gateway
+    min_interval_seconds: 600
