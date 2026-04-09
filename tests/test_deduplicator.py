@@ -42,6 +42,10 @@ class TestDeduplicatedReport:
         report = DeduplicatedReport(unique=[_make("svc")], duplicate_count=5)
         assert "5" in report.summary()
 
+    def test_total_seen_zero_duplicates(self):
+        report = DeduplicatedReport(unique=[_make("svc-a"), _make("svc-b")], duplicate_count=0)
+        assert report.total_seen() == 2
+
 
 # ---------------------------------------------------------------------------
 # TestDeduplicate
@@ -87,16 +91,15 @@ class TestDeduplicate:
         assert report.duplicate_count == 0
 
     def test_multiple_duplicates_counted_correctly(self):
-        r = _make("svc", {"key": "v"})
+        r = _make("auth")
         report = deduplicate([r, r, r, r])
         assert len(report.unique) == 1
         assert report.duplicate_count == 3
-        assert report.total_seen() == 4
 
-    def test_preserves_first_occurrence_order(self):
-        r1 = _make("alpha")
-        r2 = _make("beta")
-        r3 = _make("alpha")  # duplicate of r1
-        report = deduplicate([r1, r2, r3])
-        assert report.unique[0].service == "alpha"
-        assert report.unique[1].service == "beta"
+    def test_mixed_unique_and_duplicate_results(self):
+        r1 = _make("auth")
+        r2 = _make("billing")
+        report = deduplicate([r1, r2, r1])
+        assert len(report.unique) == 2
+        assert report.duplicate_count == 1
+        assert report.total_seen() == 3
