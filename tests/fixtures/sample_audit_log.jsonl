@@ -1,3 +1,5 @@
 {"service": "api-gateway", "timestamp": "2024-05-01T10:00:00+00:00", "has_drift": false, "drift_count": 0, "fields": []}
 {"service": "auth-service", "timestamp": "2024-05-01T10:01:00+00:00", "has_drift": true, "drift_count": 2, "fields": ["replicas", "image_tag"]}
 {"service": "worker", "timestamp": "2024-05-01T10:02:00+00:00", "has_drift": true, "drift_count": 1, "fields": ["env"]}
+{"service": "payment-service", "timestamp": "2024-05-01T10:03:00+00:00", "has_drift": false, "drift_count": 0, "fields": []}
+{"service": "notification-service", "timestamp": "2024-05-01T10:04:00+00:00", "has_drift": true, "drift_count": 3, "fields": ["replicas", "memory_limit", "image_tag"]}
