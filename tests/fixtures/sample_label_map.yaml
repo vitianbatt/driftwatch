@@ -1,0 +1,18 @@
+# Sample label map fixture used in labeler integration tests.
+# Maps service name -> label key/value pairs.
+
+auth-service:
+  env: production
+  team: identity
+
+billing-service:
+  env: production
+  team: payments
+
+gateway-service:
+  env: staging
+  team: platform
+
+worker-service:
+  env: staging
+  team: platform
