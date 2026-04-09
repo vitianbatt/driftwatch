@@ -1,0 +1,11 @@
+auth-service:
+  - critical
+  - prod
+payment-service:
+  - critical
+  - prod
+  - pci
+notification-service:
+  - prod
+analytics-service:
+  - staging
