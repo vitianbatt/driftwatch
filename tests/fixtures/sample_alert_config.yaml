@@ -1,0 +1,10 @@
+rules:
+  - min_severity: high
+    level: critical
+    message_template: "CRITICAL drift in {service}: {summary}"
+  - min_severity: medium
+    level: warning
+    message_template: "Warning: drift in {service}: {summary}"
+  - min_severity: low
+    level: info
+    message_template: "Info: drift in {service}: {summary}"
