@@ -1,0 +1,30 @@
+# Sample drift results used by grouper integration tests
+- service: auth-service
+  diffs:
+    - field: replicas
+      expected: 3
+      actual: 2
+    - field: image_tag
+      expected: v1.4.0
+      actual: v1.3.9
+
+- service: billing-service
+  diffs: []
+
+- service: auth-service
+  diffs:
+    - field: timeout
+      expected: 30
+      actual: 60
+
+- service: gateway-service
+  diffs:
+    - field: replicas
+      expected: 2
+      actual: 1
+    - field: cpu_limit
+      expected: "500m"
+      actual: "250m"
+    - field: memory_limit
+      expected: "256Mi"
+      actual: "128Mi"
