@@ -1,0 +1,19 @@
+# Sample DriftResult entries used for rollup integration tests
+results:
+  - service: auth-service
+    diffs: {}
+  - service: payment-service
+    diffs:
+      timeout:
+        - 30
+        - 60
+      replicas:
+        - 3
+        - 1
+  - service: notification-service
+    diffs: {}
+  - service: gateway-service
+    diffs:
+      env:
+        - production
+        - staging
