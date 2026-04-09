@@ -55,7 +55,17 @@ def compare_to_baseline(
     live_config: Dict[str, Any],
     baseline_path: str | Path,
 ) -> BaselineDriftReport:
-    """Load the latest baseline for *service* and diff against *live_config*."""
+    """Load the latest baseline for *service* and diff against *live_config*.
+
+    Args:
+        service: Name of the service whose baseline should be loaded.
+        live_config: The current configuration to compare against the baseline.
+        baseline_path: Path to the baseline file or directory.
+
+    Returns:
+        A :class:`BaselineDriftReport` describing any drift found, a missing
+        baseline, or an error encountered during loading.
+    """
     try:
         entry = load_baseline(baseline_path, service)
     except BaselineError as exc:
@@ -66,3 +76,23 @@ def compare_to_baseline(
 
     result = compare(spec=entry.snapshot, live=live_config)
     return BaselineDriftReport(service=service, baseline_entry=entry, drift_result=result)
+
+
+def compare_many_to_baseline(
+    services: Dict[str, Dict[str, Any]],
+    baseline_path: str | Path,
+) -> List[BaselineDriftReport]:
+    """Compare multiple services against their saved baselines in one call.
+
+    Args:
+        services: Mapping of service name to its live configuration dict.
+        baseline_path: Path to the baseline file or directory.
+
+    Returns:
+        A list of :class:`BaselineDriftReport` instances, one per service,
+        in the same order as *services*.
+    """
+    return [
+        compare_to_baseline(service, live_config, baseline_path)
+        for service, live_config in services.items()
+    ]
