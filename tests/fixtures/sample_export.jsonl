@@ -1,0 +1,3 @@
+{"timestamp": "2024-06-01T10:00:00Z", "service": "api-gateway", "has_drift": false, "drift_fields": [], "spec_source": "specs/api-gateway.yaml"}
+{"timestamp": "2024-06-01T10:05:00Z", "service": "auth-service", "has_drift": true, "drift_fields": ["replicas", "image"], "spec_source": "specs/auth-service.yaml"}
+{"timestamp": "2024-06-01T10:10:00Z", "service": "billing", "has_drift": true, "drift_fields": ["env.TIMEOUT"], "spec_source": "specs/billing.yaml"}
