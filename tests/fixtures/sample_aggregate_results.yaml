@@ -1,0 +1,26 @@
+# Sample drift results used to test the aggregator fixture loading
+- service: auth-service
+  missing_keys: []
+  extra_keys: []
+  changed_keys: {}
+
+- service: payment-service
+  missing_keys:
+    - timeout
+    - retry_limit
+  extra_keys: []
+  changed_keys: {}
+
+- service: notification-service
+  missing_keys: []
+  extra_keys:
+    - debug_flag
+  changed_keys:
+    log_level:
+      - info
+      - debug
+
+- service: gateway-service
+  missing_keys: []
+  extra_keys: []
+  changed_keys: {}
