@@ -1,0 +1,11 @@
+# Sample policy rules fixture used in integration tests.
+rules:
+  - name: no-critical-drift
+    min_severity: HIGH
+    max_violations: 0
+  - name: low-drift-tolerance
+    min_severity: LOW
+    max_violations: 2
+  - name: medium-drift-gate
+    min_severity: MEDIUM
+    max_violations: 1
