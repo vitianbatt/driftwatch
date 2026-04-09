@@ -1,0 +1,16 @@
+auth-service:
+  environment: production
+  region: us-east-1
+  owner: platform-team
+  tier: critical
+
+billing-service:
+  environment: staging
+  region: eu-west-1
+  owner: billing-team
+
+worker-service:
+  environment: production
+  region: ap-southeast-1
+  owner: infra-team
+  tier: standard
