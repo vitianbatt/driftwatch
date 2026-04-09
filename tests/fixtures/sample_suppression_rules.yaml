@@ -1,0 +1,13 @@
+# Sample suppression rules fixture used in integration tests
+rules:
+  - service: "auth-service"
+    fields:
+      - "replicas"
+    reason: "replicas managed by autoscaler"
+  - service: "legacy-*"
+    fields:
+      - "image"
+      - "env.DEBUG"
+    reason: "legacy services use pinned images"
+  - service: "canary-service"
+    reason: "entire service drift is expected during rollout"
