@@ -1,0 +1,10 @@
+# sample_field_mapping.yaml — example field mapping configuration for driftwatch mapper
+mappings:
+  - source: replicas
+    destination: replica_count
+  - source: image
+    destination: container_image
+  - source: cpu_limit
+    destination: cpu
+  - source: memory_limit
+    destination: memory
