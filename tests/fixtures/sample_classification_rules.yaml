@@ -1,0 +1,9 @@
+rules:
+  - category: network
+    pattern: "^port"
+  - category: auth
+    pattern: "^(auth|token|secret)"
+  - category: storage
+    pattern: "^(db|database|redis|bucket)"
+  - category: observability
+    pattern: "^(log|metric|trace|sentry)"
