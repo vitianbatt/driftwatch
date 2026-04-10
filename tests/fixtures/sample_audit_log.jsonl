@@ -3,3 +3,5 @@
 {"service": "worker", "timestamp": "2024-05-01T10:02:00+00:00", "has_drift": true, "drift_count": 1, "fields": ["env"]}
 {"service": "payment-service", "timestamp": "2024-05-01T10:03:00+00:00", "has_drift": false, "drift_count": 0, "fields": []}
 {"service": "notification-service", "timestamp": "2024-05-01T10:04:00+00:00", "has_drift": true, "drift_count": 3, "fields": ["replicas", "memory_limit", "image_tag"]}
+{"service": "cache-service", "timestamp": "2024-05-01T10:05:00+00:00", "has_drift": false, "drift_count": 0, "fields": []}
+{"service": "search-service", "timestamp": "2024-05-01T10:06:00+00:00", "has_drift": true, "drift_count": 1, "fields": ["cpu_limit"]}
