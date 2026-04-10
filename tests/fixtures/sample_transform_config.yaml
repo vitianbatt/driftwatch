@@ -1,0 +1,8 @@
+# sample_transform_config.yaml — example field transform configuration
+transforms:
+  - field: environment
+    transform: lowercase
+  - field: region
+    transform: uppercase
+  - field: service_name
+    transform: strip
