@@ -12,8 +12,17 @@ from driftwatch.grouper import GroupBy, GroupedReport, GrouperError, group_resul
 
 
 def results_from_json(raw: str) -> List[DriftResult]:
-    """Deserialise a JSON string produced by a previous ``check`` run."""
-    data = json.loads(raw)
+    """Deserialise a JSON string produced by a previous ``check`` run.
+
+    Raises
+    ------
+    GrouperError
+        If *raw* is not valid JSON or is not a JSON array.
+    """
+    try:
+        data = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise GrouperError(f"Invalid JSON input: {exc}") from exc
     if not isinstance(data, list):
         raise GrouperError("Expected a JSON array of drift results")
     out: List[DriftResult] = []
@@ -59,6 +68,11 @@ def run_grouper(
     except ValueError:
         valid = ", ".join(g.value for g in GroupBy)
         raise GrouperError(f"Unknown dimension '{by}'. Valid options: {valid}")
+
+    if dimension is GroupBy.TAG and not tag_map:
+        raise GrouperError(
+            "A tag_map must be provided when grouping by 'tag'"
+        )
 
     results = results_from_json(results_json)
     report = group_results(results, dimension, tag_map=tag_map)
