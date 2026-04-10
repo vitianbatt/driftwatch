@@ -1,0 +1,7 @@
+# Sample normalization map for driftwatch normalizer tests
+rules:
+  mem_limit: memory_limit
+  cpu_limit: cpu_request
+  replicas_count: replica_count
+  env: environment
+  img: image
