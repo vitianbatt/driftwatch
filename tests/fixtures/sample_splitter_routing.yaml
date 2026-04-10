@@ -1,0 +1,8 @@
+# Sample routing map for splitter integration tests
+team-platform:
+  - auth
+  - billing
+  - gateway
+team-data:
+  - search
+  - analytics
