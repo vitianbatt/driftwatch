@@ -1,0 +1,3 @@
+{"service": "auth", "has_drift": false, "missing_keys": [], "extra_keys": [], "changed_keys": []}
+{"service": "billing", "has_drift": true, "missing_keys": ["timeout"], "extra_keys": [], "changed_keys": []}
+{"service": "gateway", "has_drift": true, "missing_keys": [], "extra_keys": ["debug"], "changed_keys": ["replicas"]}
