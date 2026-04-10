@@ -1,0 +1,19 @@
+[
+  {
+    "service": "auth-service",
+    "diffs": [
+      {"field": "replicas", "expected": 3, "actual": null},
+      {"field": "timeout", "expected": 30, "actual": 10}
+    ]
+  },
+  {
+    "service": "billing-service",
+    "diffs": [
+      {"field": "debug_mode", "expected": null, "actual": true}
+    ]
+  },
+  {
+    "service": "gateway",
+    "diffs": []
+  }
+]
