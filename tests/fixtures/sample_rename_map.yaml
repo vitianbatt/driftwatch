@@ -1,0 +1,6 @@
+# Sample rename map fixture for driftwatch renamer tests
+mappings:
+  mem_limit: memory_limit
+  cpu_limit: cpu_request
+  replicas_count: replica_count
+  env: environment
