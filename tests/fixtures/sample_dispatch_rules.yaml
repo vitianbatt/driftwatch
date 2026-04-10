@@ -1,0 +1,11 @@
+# Sample dispatch rules fixture used in integration tests
+rules:
+  - name: drift_alert
+    predicate: has_drift
+    handler: log
+  - name: clean_log
+    predicate: no_drift
+    handler: log
+  - name: catch_all
+    predicate: always
+    handler: log
