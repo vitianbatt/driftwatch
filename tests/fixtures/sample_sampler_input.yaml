@@ -1,0 +1,21 @@
+# Fixture: sample input results for sampler integration tests
+- service: auth-service
+  diffs:
+    - field: replicas
+      expected: "3"
+      actual: "2"
+      kind: changed
+- service: billing-service
+  diffs: []
+- service: gateway-service
+  diffs:
+    - field: timeout
+      expected: "30"
+      actual: "60"
+      kind: changed
+    - field: log_level
+      expected: "info"
+      actual: "debug"
+      kind: changed
+- service: worker-service
+  diffs: []
