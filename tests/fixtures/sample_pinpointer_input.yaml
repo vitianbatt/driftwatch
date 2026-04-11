@@ -1,0 +1,20 @@
+# Sample input for pinpointer integration tests
+# Each entry represents a DriftResult-like record
+
+- service: auth-service
+  diffs:
+    - field: port
+      expected: 8080
+      actual: null
+    - field: replicas
+      expected: 3
+      actual: 1
+
+- service: gateway
+  diffs:
+    - field: timeout
+      expected: null
+      actual: 30
+
+- service: billing
+  diffs: []
