@@ -1,0 +1,8 @@
+# Sample match rules fixture for driftwatch matcher tests
+rules:
+  - pattern: "auth-*"
+    use_regex: false
+  - pattern: "payment-*"
+    use_regex: false
+  - pattern: ".*-worker$"
+    use_regex: true
