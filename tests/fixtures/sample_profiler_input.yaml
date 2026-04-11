@@ -1,0 +1,35 @@
+# Sample input for profiler integration tests
+# Each entry represents a drift result from a service
+
+results:
+  - service: auth-service
+    diffs:
+      - field: timeout
+        kind: changed
+        expected: "30s"
+        actual: "60s"
+      - field: replicas
+        kind: missing
+        expected: "3"
+        actual: null
+
+  - service: payment-service
+    diffs:
+      - field: timeout
+        kind: changed
+        expected: "30s"
+        actual: "45s"
+
+  - service: inventory-service
+    diffs:
+      - field: replicas
+        kind: changed
+        expected: "2"
+        actual: "1"
+      - field: memory_limit
+        kind: missing
+        expected: "512Mi"
+        actual: null
+
+  - service: gateway-service
+    diffs: []
