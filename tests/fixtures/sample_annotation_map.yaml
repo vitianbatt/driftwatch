@@ -1,0 +1,11 @@
+# Sample annotation map used by integration tests.
+# Keys are service names; values are lists of note strings.
+auth-service:
+  - "Reviewed 2024-01-15"
+  - "Pending rotation of DB credentials"
+billing-service:
+  - "Owner: payments-team"
+gateway-service:
+  - "High-traffic – handle with care"
+  - "Rate-limit config drifts expected during rollout"
+worker-service: []
