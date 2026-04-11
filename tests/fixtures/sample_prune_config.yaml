@@ -1,0 +1,5 @@
+max_age_seconds: 3600
+excluded_fields:
+  - debug_flag
+  - internal_version
+drop_clean: true
