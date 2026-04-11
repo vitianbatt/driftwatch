@@ -47,10 +47,15 @@ def build_mapping(raw: list[dict[str, str]]) -> list[FieldMapping]:
     if raw is None:
         raise MapperError("mapping list must not be None")
     mappings = []
+    seen_sources: set[str] = set()
     for item in raw:
         if "source" not in item or "destination" not in item:
             raise MapperError(f"each mapping entry must have 'source' and 'destination': {item}")
-        mappings.append(FieldMapping(source=item["source"], destination=item["destination"]))
+        source = item["source"]
+        if source in seen_sources:
+            raise MapperError(f"duplicate source field in mapping: '{source}'")
+        seen_sources.add(source)
+        mappings.append(FieldMapping(source=source, destination=item["destination"]))
     return mappings
 
 
