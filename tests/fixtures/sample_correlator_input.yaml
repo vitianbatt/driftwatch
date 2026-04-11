@@ -1,0 +1,22 @@
+# Sample input for correlator integration tests
+# Each entry represents a DriftResult-like record
+- service: auth-service
+  drifted_fields:
+    - env
+    - replicas
+
+- service: billing-service
+  drifted_fields:
+    - env
+    - replicas
+
+- service: payment-service
+  drifted_fields:
+    - timeout
+
+- service: gateway-service
+  drifted_fields:
+    - timeout
+
+- service: metrics-service
+  drifted_fields: []
