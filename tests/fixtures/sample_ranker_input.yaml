@@ -1,0 +1,36 @@
+# Sample input for ranker integration tests
+- service: auth-service
+  diffs:
+    - field: replicas
+      kind: changed
+      expected: "3"
+      actual: "1"
+    - field: image_tag
+      kind: changed
+      expected: v1.4.0
+      actual: v1.3.9
+    - field: memory_limit
+      kind: missing
+      expected: 512Mi
+      actual: ""
+    - field: cpu_limit
+      kind: missing
+      expected: 250m
+      actual: ""
+
+- service: billing-service
+  diffs:
+    - field: replicas
+      kind: changed
+      expected: "2"
+      actual: "2"
+
+- service: notification-service
+  diffs: []
+
+- service: gateway-service
+  diffs:
+    - field: timeout
+      kind: extra
+      expected: ""
+      actual: "30s"
