@@ -1,0 +1,7 @@
+# Sample scope configuration for driftwatch scoper tests
+include:
+  - auth-service
+  - billing-service
+  - payments-service
+exclude:
+  - legacy-service
