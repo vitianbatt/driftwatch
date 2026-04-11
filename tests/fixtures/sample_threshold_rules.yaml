@@ -1,0 +1,10 @@
+rules:
+  - name: low-warning
+    min_drift_fields: 1
+    tag: low-breach
+  - name: medium-warning
+    min_drift_fields: 3
+    tag: medium-breach
+  - name: critical-alert
+    min_drift_fields: 6
+    tag: critical-breach
