@@ -37,6 +37,7 @@ class TestFixtureLoads:
 
 class TestRedactionWithFixture:
     def _make(self, service: str, fields: list) -> DriftResult:
+        """Build a DriftResult with 'changed' diffs for the given field names."""
         diffs = [
             FieldDiff(field=f, kind="changed", expected="old_val", actual="new_val")
             for f in fields
@@ -64,6 +65,18 @@ class TestRedactionWithFixture:
         out = redact_results([result], rules)
         assert out[0].diffs[0].expected == "old_val"
         assert out[0].redacted_fields == []
+
+    def test_multiple_sensitive_fields_all_redacted(self, rules):
+        """All sensitive fields across a single result should be redacted."""
+        result = self._make("multi-svc", ["db_password", "api_token", "replicas"])
+        out = redact_results([result], rules)
+        redacted = out[0].redacted_fields
+        assert "db_password" in redacted
+        assert "api_token" in redacted
+        assert "replicas" not in redacted
+        # The non-sensitive field value must remain intact
+        replicas_diff = next(d for d in out[0].diffs if d.field == "replicas")
+        assert replicas_diff.expected == "old_val"
 
     def test_run_redactor_returns_json_string(self, tmp_path):
         import json
