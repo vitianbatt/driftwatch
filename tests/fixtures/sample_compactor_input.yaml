@@ -1,0 +1,20 @@
+# Sample input for compactor integration tests
+# Multiple entries per service to exercise merging
+- service: auth-service
+  drift_fields:
+    - timeout
+    - replicas
+
+- service: payments-service
+  drift_fields: []
+
+- service: auth-service
+  drift_fields:
+    - memory_limit
+
+- service: payments-service
+  drift_fields:
+    - port
+
+- service: gateway
+  drift_fields: []
