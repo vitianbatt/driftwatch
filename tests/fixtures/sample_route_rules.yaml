@@ -1,0 +1,8 @@
+# Sample routing rules for driftwatch router integration tests
+rules:
+  - destination: auth-team
+    pattern: "auth-*"
+  - destination: billing-team
+    pattern: "billing-*"
+  - destination: ops
+    pattern: "*"
