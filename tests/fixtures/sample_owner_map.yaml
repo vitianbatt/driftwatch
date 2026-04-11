@@ -1,0 +1,5 @@
+owners:
+  auth-service: team-platform
+  billing-service: team-finance
+  gateway-service: team-platform
+  reporting-service: team-data
