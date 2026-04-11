@@ -1,0 +1,33 @@
+# Sample input for partitioner integration tests
+- service: auth-service
+  spec:
+    environment: prod
+    replicas: 3
+  live:
+    replicas: 3
+  diffs: []
+
+- service: billing-service
+  spec:
+    environment: staging
+    replicas: 2
+  live:
+    replicas: 1
+  diffs:
+    - field: replicas
+      expected: 2
+      actual: 1
+      kind: changed
+
+- service: search-service
+  spec:
+    environment: prod
+    replicas: 5
+  live:
+    replicas: 5
+  diffs: []
+
+- service: legacy-service
+  spec: {}
+  live: {}
+  diffs: []
