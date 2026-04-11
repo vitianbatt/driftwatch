@@ -1,0 +1,11 @@
+# Sample dependency map for linker integration tests
+deps:
+  api-service:
+    - auth-service
+    - db-service
+  worker-service:
+    - db-service
+    - queue-service
+  auth-service: []
+  db-service: []
+  queue-service: []
