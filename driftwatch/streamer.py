@@ -48,7 +48,7 @@ def _result_to_text(result: DriftResult) -> str:
     if result.changed_keys:
         parts.append(f"changed={result.changed_keys}")
     detail = ", ".join(parts)
-    return f"[DRIFT] {result.service} — {detail}"
+    return f"[DRIFT] {result.service} \u2014 {detail}"
 
 
 _FORMATTERS: dict[str, Callable[[DriftResult], str]] = {
@@ -64,6 +64,9 @@ def stream_results(
     """Write each result to *config.out* immediately.
 
     Returns the number of results written.
+
+    Raises:
+        StreamerError: If writing to the output stream fails.
     """
     if config is None:
         config = StreamConfig()
@@ -72,8 +75,13 @@ def stream_results(
     count = 0
     for result in results:
         line = formatter(result)
-        config.out.write(line + "\n")
-        if config.flush_each:
-            config.out.flush()
+        try:
+            config.out.write(line + "\n")
+            if config.flush_each:
+                config.out.flush()
+        except OSError as exc:
+            raise StreamerError(
+                f"Failed to write result for service '{result.service}': {exc}"
+            ) from exc
         count += 1
     return count
