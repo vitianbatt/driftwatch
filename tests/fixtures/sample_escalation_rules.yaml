@@ -1,0 +1,17 @@
+# Sample escalation rules fixture for driftwatch tests
+rules:
+  - name: critical-escalation
+    min_severity: high
+    notify_channel: pagerduty
+    tags:
+      - production
+      - critical
+  - name: medium-escalation
+    min_severity: medium
+    notify_channel: slack
+    tags:
+      - staging
+  - name: catch-all
+    min_severity: low
+    notify_channel: email
+    tags: []
