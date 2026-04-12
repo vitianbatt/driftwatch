@@ -1,0 +1,21 @@
+# Sample input for flattener integration tests
+- service: auth-service
+  diffs:
+    - key: port
+      expected: 443
+      actual: 80
+      diff_type: changed
+    - key: replicas
+      expected: 3
+      actual: 1
+      diff_type: changed
+
+- service: payment-service
+  diffs:
+    - key: timeout
+      expected: 30
+      actual: null
+      diff_type: missing
+
+- service: notification-service
+  diffs: []
