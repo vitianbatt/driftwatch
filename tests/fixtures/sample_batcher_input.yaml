@@ -1,0 +1,31 @@
+# Sample input for batcher integration tests
+- service: auth-service
+  diffs:
+    - field: replicas
+      kind: changed
+      expected: "3"
+      actual: "1"
+    - field: image_tag
+      kind: changed
+      expected: v2.1.0
+      actual: v2.0.0
+
+- service: billing-service
+  diffs: []
+
+- service: gateway-service
+  diffs:
+    - field: timeout
+      kind: missing
+      expected: "30"
+      actual: null
+
+- service: metrics-service
+  diffs: []
+
+- service: cache-service
+  diffs:
+    - field: max_memory
+      kind: extra
+      expected: null
+      actual: "512mb"
