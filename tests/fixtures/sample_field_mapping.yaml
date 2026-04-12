@@ -2,9 +2,16 @@
 mappings:
   - source: replicas
     destination: replica_count
+    description: "Number of desired pod replicas"
+
   - source: image
     destination: container_image
+    description: "Container image name and tag"
+
   - source: cpu_limit
     destination: cpu
+    description: "CPU resource limit (e.g. 500m, 1)"
+
   - source: memory_limit
     destination: memory
+    description: "Memory resource limit (e.g. 128Mi, 1Gi)"
