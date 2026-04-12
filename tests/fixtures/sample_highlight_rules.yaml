@@ -1,0 +1,7 @@
+rules:
+  - pattern: "timeout*"
+    label: "latency-sensitive"
+  - pattern: "replicas"
+    label: "capacity-critical"
+  - pattern: "memory_*"
+    label: "resource-critical"
