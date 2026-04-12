@@ -1,0 +1,7 @@
+rules:
+  - name: network
+    pattern: "net_*"
+  - name: database
+    pattern: "db_*"
+  - name: auth
+    pattern: "auth_*"
