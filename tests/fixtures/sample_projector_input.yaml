@@ -1,0 +1,16 @@
+# Sample input for projector integration tests
+- service: payment-service
+  diffs:
+    - field: max_connections
+      expected: "100"
+      actual: "50"
+    - field: timeout
+      expected: "30"
+      actual: null
+- service: auth-service
+  diffs: []
+- service: gateway
+  diffs:
+    - field: debug_mode
+      expected: null
+      actual: "true"
