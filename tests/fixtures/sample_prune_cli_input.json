@@ -1,0 +1,16 @@
+[
+  {"service": "auth-service", "diffs": []},
+  {
+    "service": "billing-service",
+    "diffs": [
+      {"field": "timeout", "kind": "missing", "expected": "30s", "actual": null},
+      {"field": "replicas", "kind": "changed", "expected": "3", "actual": "1"}
+    ]
+  },
+  {
+    "service": "payment-service",
+    "diffs": [
+      {"field": "memory_limit", "kind": "extra", "expected": null, "actual": "512Mi"}
+    ]
+  }
+]
