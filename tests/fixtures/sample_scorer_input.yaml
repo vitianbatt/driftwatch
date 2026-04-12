@@ -1,0 +1,30 @@
+# Sample input for scorer integration tests
+- service: auth-service
+  diffs: []
+
+- service: payment-service
+  diffs:
+    - field: replicas
+      expected: "3"
+      actual: "1"
+
+- service: gateway
+  diffs:
+    - field: image_tag
+      expected: stable
+      actual: latest
+    - field: memory_limit
+      expected: 512Mi
+      actual: 256Mi
+
+- service: worker
+  diffs:
+    - field: cpu_request
+      expected: 250m
+      actual: 100m
+    - field: replicas
+      expected: "5"
+      actual: "2"
+    - field: env_LOG_LEVEL
+      expected: INFO
+      actual: DEBUG
