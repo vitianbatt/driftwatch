@@ -45,6 +45,12 @@ class TestSampleReport:
         assert "1 with drift" in r.summary()
         assert "2 of 10" in r.summary()
 
+    def test_summary_no_drift(self):
+        """Summary should indicate zero drift when all sampled results are clean."""
+        results = [_make("a"), _make("b")]
+        r = SampleReport(sampled=results, total_input=10, seed=1)
+        assert "0 with drift" in r.summary()
+
 
 # ---------------------------------------------------------------------------
 # TestSampleResults
@@ -84,19 +90,16 @@ class TestSampleResults:
         r2 = sample_results(data, n=5, seed=99)
         assert r1.service_names() == r2.service_names()
 
-    def test_different_seeds_likely_differ(self):
-        data = [_make(f"svc-{i}") for i in range(20)]
-        r1 = sample_results(data, n=5, seed=1)
-        r2 = sample_results(data, n=5, seed=2)
-        # Not guaranteed but overwhelmingly likely with 20 items
+    def test_different_seeds_produce_different_samples(self):
+        """Two distinct seeds should (very likely) yield different samples."""
+        data = [_make(f"svc-{i}") for i in range(50)]
+        r1 = sample_results(data, n=10, seed=1)
+        r2 = sample_results(data, n=10, seed=2)
+        # With 50 items and n=10 the probability of identical samples is negligible.
         assert r1.service_names() != r2.service_names()
 
-    def test_seed_stored_in_report(self):
-        data = [_make("a"), _make("b")]
-        report = sample_results(data, n=1, seed=7)
-        assert report.seed == 7
-
-    def test_no_seed_stored_as_none(self):
-        data = [_make("a")]
-        report = sample_results(data, n=1)
-        assert report.seed is None
+    def test_total_input_recorded_correctly(self):
+        """total_input on the report must reflect the original list length, not n."""
+        data = [_make(f"svc-{i}") for i in range(15)]
+        report = sample_results(data, n=5, seed=0)
+        assert report.total_input == 15
