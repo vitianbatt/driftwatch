@@ -1,0 +1,16 @@
+[
+  {"service": "auth-service", "diffs": []},
+  {
+    "service": "payment-service",
+    "diffs": [
+      {"field": "replicas", "expected": 3, "actual": 1},
+      {"field": "image_tag", "expected": "v2.1", "actual": "v1.9"}
+    ]
+  },
+  {
+    "service": "notification-service",
+    "diffs": [
+      {"field": "timeout", "expected": 30, "actual": 60}
+    ]
+  }
+]
