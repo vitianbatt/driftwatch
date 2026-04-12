@@ -1,0 +1,33 @@
+# Sample input for observer integration tests
+# Each entry represents a drift result with drifted fields
+- service: auth-service
+  diffs:
+    - field: timeout
+      kind: changed
+      expected: 30
+      actual: 60
+    - field: replicas
+      kind: missing
+      expected: 3
+      actual: null
+
+- service: billing-service
+  diffs:
+    - field: timeout
+      kind: changed
+      expected: 30
+      actual: 45
+    - field: log_level
+      kind: missing
+      expected: info
+      actual: null
+
+- service: gateway-service
+  diffs:
+    - field: timeout
+      kind: changed
+      expected: 30
+      actual: 120
+
+- service: clean-service
+  diffs: []
