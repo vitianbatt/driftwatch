@@ -1,0 +1,14 @@
+# sample input for diffstat integration tests
+- service: auth-service
+  drifted_fields:
+    - timeout
+    - max_connections
+- service: payment-service
+  drifted_fields:
+    - timeout
+    - retry_limit
+- service: user-service
+  drifted_fields: []
+- service: billing-service
+  drifted_fields:
+    - max_connections
