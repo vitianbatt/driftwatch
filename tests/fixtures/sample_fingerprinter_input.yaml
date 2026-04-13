@@ -1,0 +1,21 @@
+# Sample input for fingerprinter integration tests
+- service: auth-service
+  diffs:
+    - field: port
+      kind: changed
+      expected: 8080
+      actual: 9090
+    - field: replicas
+      kind: missing
+      expected: 3
+      actual: null
+
+- service: payment-service
+  diffs: []
+
+- service: gateway
+  diffs:
+    - field: timeout
+      kind: changed
+      expected: 30
+      actual: 60
