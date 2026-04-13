@@ -1,0 +1,25 @@
+previous:
+  - service: auth-service
+    drifted_fields:
+      - cpu_limit
+      - memory_limit
+  - service: payment-service
+    drifted_fields:
+      - timeout
+  - service: stable-service
+    drifted_fields:
+      - replicas
+
+current:
+  - service: auth-service
+    drifted_fields:
+      - cpu_limit
+      - log_level
+  - service: payment-service
+    drifted_fields: []
+  - service: stable-service
+    drifted_fields:
+      - replicas
+  - service: new-service
+    drifted_fields:
+      - image_tag
