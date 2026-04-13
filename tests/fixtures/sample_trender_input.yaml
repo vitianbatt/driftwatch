@@ -1,0 +1,33 @@
+# Sample input for trender integration tests.
+# Represents two batches of drift results across two timestamps.
+
+timestamps:
+  - "2024-01-01T00:00:00"
+  - "2024-01-02T00:00:00"
+
+batches:
+  - - service: auth-service
+      diffs:
+        - field: replicas
+          action: changed
+          expected: "2"
+          actual: "3"
+    - service: payments-service
+      diffs: []
+
+  - - service: auth-service
+      diffs:
+        - field: replicas
+          action: changed
+          expected: "2"
+          actual: "4"
+        - field: image_tag
+          action: changed
+          expected: "v1.2"
+          actual: "v1.3"
+    - service: payments-service
+      diffs:
+        - field: timeout
+          action: changed
+          expected: "30"
+          actual: "60"
