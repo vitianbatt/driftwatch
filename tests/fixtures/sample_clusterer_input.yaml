@@ -1,0 +1,28 @@
+# Sample input for clusterer integration tests
+- service: auth-service
+  diffs:
+    - field: timeout
+      kind: changed
+      expected: "30"
+      actual: "60"
+    - field: replicas
+      kind: changed
+      expected: "2"
+      actual: "3"
+
+- service: payment-service
+  diffs:
+    - field: timeout
+      kind: changed
+      expected: "30"
+      actual: "45"
+
+- service: notification-service
+  diffs:
+    - field: replicas
+      kind: changed
+      expected: "2"
+      actual: "1"
+
+- service: inventory-service
+  diffs: []
