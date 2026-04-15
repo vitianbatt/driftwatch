@@ -1,0 +1,33 @@
+# Sample input for bucketer integration tests
+bucket_map:
+  production:
+    - auth-service
+    - billing-service
+    - gateway-service
+  staging:
+    - auth-service-staging
+    - worker-service-staging
+
+results:
+  - service: auth-service
+    diffs:
+      - field: replicas
+        action: changed
+        expected: "3"
+        actual: "2"
+  - service: billing-service
+    diffs: []
+  - service: gateway-service
+    diffs:
+      - field: image_tag
+        action: changed
+        expected: v1.4.0
+        actual: v1.3.9
+  - service: auth-service-staging
+    diffs: []
+  - service: worker-service-staging
+    diffs:
+      - field: memory_limit
+        action: missing
+        expected: "512Mi"
+        actual: ""
