@@ -1,0 +1,9 @@
+# Sample input for drift summary reporter integration tests
+- service: auth-service
+  drifted: true
+- service: billing-service
+  drifted: false
+- service: gateway-service
+  drifted: true
+- service: notification-service
+  drifted: false
