@@ -1,0 +1,23 @@
+# Sample input for scorer_reporter integration tests
+# Each entry is a DriftResult-like record used to build a ScoredReport.
+results:
+  - service: auth-service
+    diffs: []
+  - service: payments-service
+    diffs:
+      - field: replicas
+        kind: missing
+        expected: "3"
+        actual: null
+      - field: memory_limit
+        kind: changed
+        expected: "512Mi"
+        actual: "256Mi"
+  - service: gateway
+    diffs:
+      - field: timeout
+        kind: changed
+        expected: "30s"
+        actual: "10s"
+  - service: worker
+    diffs: []
