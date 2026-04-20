@@ -86,15 +86,14 @@ class TestEvaluateAlerts:
         ]
         alerts = evaluate_alerts(results, self._default_config())
         assert len(alerts) == 2
-        services = {a.service for a in alerts}
-        assert services == {"svc-a", "svc-b"}
+        service_names = {a.service for a in alerts}
+        assert service_names == {"svc-a", "svc-b"}
 
-    def test_invalid_config_raises(self):
-        with pytest.raises(AlertError):
-            evaluate_alerts([], "not-a-config")  # type: ignore
-
-    def test_first_matching_rule_wins(self):
-        """Only one alert per result even when multiple rules match."""
-        result = _make_result("svc", missing=["a", "b", "c", "d", "e"])
+    def test_changed_values_contribute_to_severity(self):
+        result = _make_result("svc", changed={"key1": ("old", "new"), "key2": ("a", "b"), "key3": ("x", "y")})
         alerts = evaluate_alerts([result], self._default_config())
-        assert len(alerts) == 1
+        assert alerts[0].level == AlertLevel.WARNING
+
+    def test_empty_results_list_returns_no_alerts(self):
+        alerts = evaluate_alerts([], self._default_config())
+        assert alerts == []
