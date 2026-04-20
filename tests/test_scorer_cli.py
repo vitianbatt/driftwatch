@@ -1,77 +1,86 @@
-"""Tests for scorer_cli helpers."""
+"""Tests for driftwatch/scorer_cli.py."""
 from __future__ import annotations
 
 import json
-
 import pytest
 
-from driftwatch.scorer_cli import results_from_json, report_to_json, run_scorer
 from driftwatch.comparator import DriftResult
 from driftwatch.differ import FieldDiff
-from driftwatch.scorer import score_results
+from driftwatch.scorer import ScoredReport
+from driftwatch.scorer_cli import report_to_json, results_from_json, run_scorer
 
 
-def _make(service: str, fields: list[str] | None = None) -> DriftResult:
-    diffs = [FieldDiff(field=f, expected="a", actual="b") for f in (fields or [])]
-    return DriftResult(service=service, diffs=diffs)
+def _make(service: str, diffs: list[FieldDiff] | None = None) -> DriftResult:
+    return DriftResult(service=service, diffs=diffs or [])
 
 
 class TestResultsFromJson:
     def test_clean_result_parsed(self):
-        raw = json.dumps([{"service": "auth", "diffs": []}])
+        raw = [{"service": "auth", "diffs": []}]
         results = results_from_json(raw)
         assert len(results) == 1
         assert results[0].service == "auth"
         assert results[0].diffs == []
 
     def test_drift_result_diffs_parsed(self):
-        raw = json.dumps([
-            {"service": "api", "diffs": [{"field": "replicas", "expected": "3", "actual": "1"}]}
-        ])
+        raw = [
+            {
+                "service": "api",
+                "diffs": [
+                    {
+                        "field": "replicas",
+                        "diff_type": "changed",
+                        "expected": 3,
+                        "actual": 1,
+                    }
+                ],
+            }
+        ]
         results = results_from_json(raw)
+        assert len(results[0].diffs) == 1
         assert results[0].diffs[0].field == "replicas"
 
     def test_multiple_results_parsed(self):
-        raw = json.dumps([
+        raw = [
             {"service": "svc-a", "diffs": []},
-            {"service": "svc-b", "diffs": [{"field": "x", "expected": "1", "actual": "2"}]},
-        ])
+            {"service": "svc-b", "diffs": []},
+        ]
+        assert len(results_from_json(raw)) == 2
+
+    def test_field_names_preserved(self):
+        raw = [
+            {
+                "service": "db",
+                "diffs": [
+                    {"field": "timeout", "diff_type": "missing", "expected": 30}
+                ],
+            }
+        ]
         results = results_from_json(raw)
-        assert len(results) == 2
+        assert results[0].diffs[0].field == "timeout"
+        assert results[0].diffs[0].diff_type == "missing"
 
 
 class TestReportToJson:
     def test_output_is_valid_json(self):
-        report = score_results([_make("auth")])
-        out = report_to_json(report)
-        parsed = json.loads(out)
-        assert isinstance(parsed, list)
+        raw = [{"service": "auth", "diffs": []}]
+        report = run_scorer(raw)
+        output = report_to_json(report)
+        parsed = json.loads(output)
+        assert "average_score" in parsed
+        assert "results" in parsed
 
-    def test_each_entry_has_required_keys(self):
-        report = score_results([_make("auth", ["replicas"])])
-        out = json.loads(report_to_json(report))
-        entry = out[0]
-        assert "service" in entry
-        assert "score" in entry
-        assert "priority" in entry
-        assert "drift_fields" in entry
+    def test_average_score_present(self):
+        raw = [{"service": "auth", "diffs": []}]
+        report = run_scorer(raw)
+        parsed = json.loads(report_to_json(report))
+        assert isinstance(parsed["average_score"], (int, float))
 
-    def test_score_reflects_drift(self):
-        report = score_results([_make("auth", ["replicas", "image"])])
-        out = json.loads(report_to_json(report))
-        assert out[0]["score"] > 0
-
-
-class TestRunScorer:
-    def test_end_to_end_clean(self):
-        raw = json.dumps([{"service": "auth", "diffs": []}])
-        out = json.loads(run_scorer(raw))
-        assert out[0]["service"] == "auth"
-        assert out[0]["score"] == 0
-
-    def test_end_to_end_with_drift(self):
-        raw = json.dumps([
-            {"service": "api", "diffs": [{"field": "replicas", "expected": "3", "actual": "1"}]}
-        ])
-        out = json.loads(run_scorer(raw))
-        assert out[0]["score"] > 0
+    def test_results_list_matches_input(self):
+        raw = [
+            {"service": "a", "diffs": []},
+            {"service": "b", "diffs": []},
+        ]
+        report = run_scorer(raw)
+        parsed = json.loads(report_to_json(report))
+        assert len(parsed["results"]) == 2

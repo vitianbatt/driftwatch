@@ -1,4 +1,4 @@
-"""CLI helpers for the drift scorer module."""
+"""CLI helpers for the scorer module."""
 from __future__ import annotations
 
 import json
@@ -6,7 +6,7 @@ from typing import Any
 
 from driftwatch.comparator import DriftResult
 from driftwatch.differ import FieldDiff
-from driftwatch.scorer import ScoredReport, score_results
+from driftwatch.scorer import ScoredReport, ScorerError, score_results
 
 
 def results_from_json(raw: list[dict[str, Any]]) -> list[DriftResult]:
@@ -16,9 +16,9 @@ def results_from_json(raw: list[dict[str, Any]]) -> list[DriftResult]:
         diffs = [
             FieldDiff(
                 field=d["field"],
+                diff_type=d["diff_type"],
                 expected=d.get("expected"),
                 actual=d.get("actual"),
-                diff_type=d.get("diff_type", "changed"),
             )
             for d in item.get("diffs", [])
         ]
@@ -34,13 +34,17 @@ def results_from_json(raw: list[dict[str, Any]]) -> list[DriftResult]:
 def report_to_json(report: ScoredReport) -> str:
     """Serialise a ScoredReport to a JSON string."""
     return json.dumps(
-        {"results": [r.to_dict() for r in report.results]},
+        {
+            "average_score": report.average,
+            "results": [r.to_dict() for r in report.results],
+        },
         indent=2,
     )
 
 
-def run_scorer(raw_results: list[dict[str, Any]], weights: dict[str, float] | None = None) -> str:
-    """End-to-end helper: parse raw dicts, score them, return JSON."""
+def run_scorer(raw_results: list[dict[str, Any]]) -> ScoredReport:
+    """Parse raw dicts and return a scored report."""
     results = results_from_json(raw_results)
-    report = score_results(results, weights=weights or {})
-    return report_to_json(report)
+    if results is None:
+        raise ScorerError("No results provided")
+    return score_results(results)
