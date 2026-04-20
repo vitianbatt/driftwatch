@@ -1,0 +1,30 @@
+# Sample input for scorer_filter integration tests
+results:
+  - service: auth-service
+    score: 0.0
+    diffs: []
+  - service: payment-service
+    score: 4.5
+    diffs:
+      - field: timeout
+        kind: changed
+        expected: "30s"
+        actual: "60s"
+  - service: notification-service
+    score: 7.0
+    diffs:
+      - field: replicas
+        kind: missing
+        expected: 3
+        actual: null
+      - field: memory_limit
+        kind: changed
+        expected: "256Mi"
+        actual: "512Mi"
+  - service: gateway-service
+    score: 2.0
+    diffs:
+      - field: log_level
+        kind: extra
+        expected: null
+        actual: "debug"
