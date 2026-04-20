@@ -1,0 +1,30 @@
+# Sample input for zipper integration tests
+results:
+  - service: auth-service
+    drifted_fields: []
+  - service: payment-service
+    drifted_fields: [replicas]
+  - service: cache-service
+    drifted_fields: [timeout, max_connections]
+
+specs:
+  auth-service:
+    replicas: 3
+    timeout: 30
+  payment-service:
+    replicas: 2
+    timeout: 60
+  cache-service:
+    timeout: 10
+    max_connections: 100
+
+lives:
+  auth-service:
+    replicas: 3
+    timeout: 30
+  payment-service:
+    replicas: 5
+    timeout: 60
+  cache-service:
+    timeout: 20
+    max_connections: 200
