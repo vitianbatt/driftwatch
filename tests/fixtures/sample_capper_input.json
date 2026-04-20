@@ -1,0 +1,25 @@
+[
+  {
+    "service": "auth-service",
+    "diffs": []
+  },
+  {
+    "service": "billing-service",
+    "diffs": [
+      {"field": "timeout", "expected": "30", "actual": "60", "kind": "changed"},
+      {"field": "replicas", "expected": "3", "actual": "1", "kind": "changed"},
+      {"field": "memory_limit", "expected": "512Mi", "actual": "256Mi", "kind": "changed"}
+    ]
+  },
+  {
+    "service": "gateway-service",
+    "diffs": [
+      {"field": "log_level", "expected": "info", "actual": "debug", "kind": "changed"},
+      {"field": "max_connections", "expected": "100", "actual": "50", "kind": "changed"},
+      {"field": "tls_enabled", "expected": "true", "actual": "false", "kind": "changed"},
+      {"field": "rate_limit", "expected": "1000", "actual": "500", "kind": "changed"},
+      {"field": "retry_count", "expected": "3", "actual": "1", "kind": "changed"},
+      {"field": "health_path", "expected": "/health", "actual": "/ping", "kind": "changed"}
+    ]
+  }
+]
