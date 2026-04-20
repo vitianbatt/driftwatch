@@ -1,91 +1,70 @@
-"""weigher.py – assigns numeric weights to drift results based on field importance."""
+"""Field-weight map for the drift scorer."""
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
-
-from driftwatch.comparator import DriftResult
+from typing import Any
 
 
 class WeigherError(Exception):
-    """Raised when weight configuration is invalid."""
+    """Raised when a WeightMap is invalid."""
 
 
 @dataclass
 class WeightMap:
-    """Maps field names to importance weights (positive floats)."""
-
-    weights: Dict[str, float]
-    default_weight: float = 1.0
+    weights: dict[str, float]
+    default: float = 1.0
 
     def __post_init__(self) -> None:
-        if self.default_weight <= 0:
-            raise WeigherError("default_weight must be positive")
-        for fname, w in self.weights.items():
-            if not fname or not fname.strip():
-                raise WeigherError("Field name in weight map must not be empty")
-            if w <= 0:
+        for key, val in self.weights.items():
+            if not key or not key.strip():
+                raise WeigherError("Weight key must not be empty or whitespace.")
+            if val < 0:
                 raise WeigherError(
-                    f"Weight for field '{fname}' must be positive, got {w}"
+                    f"Weight for '{key}' must be non-negative, got {val}."
                 )
+        if self.default < 0:
+            raise WeigherError(
+                f"Default weight must be non-negative, got {self.default}."
+            )
 
     def get(self, field_name: str) -> float:
-        """Return weight for *field_name*, falling back to default."""
-        return self.weights.get(field_name, self.default_weight)
+        """Return the weight for *field_name*, falling back to the default."""
+        return self.weights.get(field_name, self.default)
 
 
 @dataclass
 class WeighedResult:
-    """A drift result decorated with a total importance score."""
-
     service: str
-    drifted_fields: List[str]
-    score: float
-    raw: DriftResult
+    field: str
+    weight: float
+    kind: str
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "service": self.service,
-            "drifted_fields": list(self.drifted_fields),
-            "score": self.score,
+            "field": self.field,
+            "weight": self.weight,
+            "kind": self.kind,
         }
 
 
-@dataclass
-class WeighedReport:
-    """Collection of weighed results."""
-
-    results: List[WeighedResult] = field(default_factory=list)
-
-    def total_score(self) -> float:
-        return sum(r.score for r in self.results)
-
-    def top(self, n: int = 5) -> List[WeighedResult]:
-        return sorted(self.results, key=lambda r: r.score, reverse=True)[:n]
-
-
-def weigh_results(
-    results: Optional[List[DriftResult]],
+def weigh_diffs(
+    service: str,
+    diffs: list[Any],
     weight_map: WeightMap,
-) -> WeighedReport:
-    """Compute an importance score for every drift result.
-
-    Score = sum of weights for each drifted field.
-    Clean results receive a score of 0.0.
-    """
-    if results is None:
-        raise WeigherError("results must not be None")
-
-    weighed: List[WeighedResult] = []
-    for r in results:
-        drifted = list(r.diffs.keys()) if r.diffs else []
-        score = sum(weight_map.get(f) for f in drifted)
-        weighed.append(
-            WeighedResult(
-                service=r.service,
-                drifted_fields=drifted,
-                score=score,
-                raw=r,
-            )
+) -> list[WeighedResult]:
+    """Return a WeighedResult for every FieldDiff in *diffs*."""
+    return [
+        WeighedResult(
+            service=service,
+            field=d.field,
+            weight=weight_map.get(d.field),
+            kind=d.kind,
         )
-    return WeighedReport(results=weighed)
+        for d in diffs
+    ]
+
+
+def total_weight(results: list[WeighedResult]) -> float:
+    """Sum the weights of all WeighedResult entries."""
+    return sum(r.weight for r in results)

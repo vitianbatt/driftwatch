@@ -3,21 +3,18 @@ from __future__ import annotations
 
 import pytest
 
-from driftwatch.comparator import DriftResult
 from driftwatch.weigher import (
-    WeighedReport,
     WeigherError,
     WeightMap,
-    weigh_results,
+    WeighedResult,
+    weigh_diffs,
+    total_weight,
 )
+from driftwatch.differ import FieldDiff
 
 
-# ---------------------------------------------------------------------------
-# helpers
-# ---------------------------------------------------------------------------
-
-def _make(service: str, diffs: dict | None = None) -> DriftResult:
-    return DriftResult(service=service, diffs=diffs or {})
+def _make(field: str = "replicas", kind: str = "changed") -> FieldDiff:
+    return FieldDiff(field=field, kind=kind, expected="2", actual="3")
 
 
 # ---------------------------------------------------------------------------
@@ -28,105 +25,90 @@ class TestWeightMap:
     def test_valid_map_created(self):
         wm = WeightMap(weights={"replicas": 2.0, "image": 3.0})
         assert wm.get("replicas") == 2.0
-        assert wm.get("image") == 3.0
 
     def test_missing_key_returns_default(self):
-        wm = WeightMap(weights={"replicas": 2.0}, default_weight=1.0)
-        assert wm.get("unknown_field") == 1.0
+        wm = WeightMap(weights={}, default=1.0)
+        assert wm.get("anything") == 1.0
 
     def test_custom_default_weight(self):
-        wm = WeightMap(weights={}, default_weight=5.0)
-        assert wm.get("anything") == 5.0
+        wm = WeightMap(weights={}, default=5.0)
+        assert wm.get("missing") == 5.0
 
-    def test_zero_default_raises(self):
-        with pytest.raises(WeigherError, match="default_weight"):
-            WeightMap(weights={}, default_weight=0)
-
-    def test_negative_default_raises(self):
-        with pytest.raises(WeigherError, match="default_weight"):
-            WeightMap(weights={}, default_weight=-1.0)
-
-    def test_zero_field_weight_raises(self):
-        with pytest.raises(WeigherError, match="replicas"):
-            WeightMap(weights={"replicas": 0})
-
-    def test_negative_field_weight_raises(self):
-        with pytest.raises(WeigherError, match="image"):
-            WeightMap(weights={"image": -3.0})
-
-    def test_empty_field_name_raises(self):
+    def test_empty_key_raises(self):
         with pytest.raises(WeigherError, match="empty"):
             WeightMap(weights={"": 1.0})
 
-    def test_whitespace_field_name_raises(self):
+    def test_whitespace_key_raises(self):
         with pytest.raises(WeigherError, match="empty"):
             WeightMap(weights={"   ": 1.0})
 
+    def test_negative_weight_raises(self):
+        with pytest.raises(WeigherError, match="non-negative"):
+            WeightMap(weights={"replicas": -1.0})
+
+    def test_negative_default_raises(self):
+        with pytest.raises(WeigherError, match="non-negative"):
+            WeightMap(weights={}, default=-0.5)
+
+    def test_zero_weight_is_valid(self):
+        wm = WeightMap(weights={"replicas": 0.0})
+        assert wm.get("replicas") == 0.0
+
 
 # ---------------------------------------------------------------------------
-# TestWeighResults
+# TestWeighDiffs
 # ---------------------------------------------------------------------------
 
-class TestWeighResults:
-    def test_none_raises(self):
+class TestWeighDiffs:
+    def test_empty_diffs_returns_empty(self):
         wm = WeightMap(weights={})
-        with pytest.raises(WeigherError):
-            weigh_results(None, wm)
+        assert weigh_diffs("svc", [], wm) == []
 
-    def test_empty_list_returns_empty_report(self):
-        wm = WeightMap(weights={})
-        report = weigh_results([], wm)
-        assert isinstance(report, WeighedReport)
-        assert report.results == []
-        assert report.total_score() == 0.0
-
-    def test_clean_result_scores_zero(self):
-        wm = WeightMap(weights={"replicas": 3.0})
-        report = weigh_results([_make("svc-a")], wm)
-        assert report.results[0].score == 0.0
-
-    def test_single_drifted_field_uses_weight(self):
+    def test_single_diff_uses_mapped_weight(self):
         wm = WeightMap(weights={"replicas": 4.0})
-        r = _make("svc-b", {"replicas": {"expected": 3, "actual": 1}})
-        report = weigh_results([r], wm)
-        assert report.results[0].score == 4.0
+        result = weigh_diffs("svc", [_make("replicas")], wm)
+        assert len(result) == 1
+        assert result[0].weight == 4.0
 
-    def test_multiple_fields_sum_weights(self):
+    def test_unmapped_field_uses_default(self):
+        wm = WeightMap(weights={}, default=2.5)
+        result = weigh_diffs("svc", [_make("image")], wm)
+        assert result[0].weight == 2.5
+
+    def test_service_name_propagated(self):
+        wm = WeightMap(weights={})
+        result = weigh_diffs("auth-service", [_make()], wm)
+        assert result[0].service == "auth-service"
+
+    def test_kind_propagated(self):
+        wm = WeightMap(weights={})
+        diff = FieldDiff(field="replicas", kind="missing", expected="2", actual=None)
+        result = weigh_diffs("svc", [diff], wm)
+        assert result[0].kind == "missing"
+
+    def test_multiple_diffs_all_weighed(self):
         wm = WeightMap(weights={"replicas": 2.0, "image": 3.0})
-        r = _make("svc-c", {
-            "replicas": {"expected": 2, "actual": 1},
-            "image": {"expected": "v1", "actual": "v2"},
-        })
-        report = weigh_results([r], wm)
-        assert report.results[0].score == 5.0
+        diffs = [_make("replicas"), _make("image"), _make("env")]
+        result = weigh_diffs("svc", diffs, wm)
+        assert len(result) == 3
 
-    def test_unknown_field_uses_default_weight(self):
-        wm = WeightMap(weights={}, default_weight=1.5)
-        r = _make("svc-d", {"memory": {"expected": "512Mi", "actual": "256Mi"}})
-        report = weigh_results([r], wm)
-        assert report.results[0].score == 1.5
 
-    def test_total_score_sums_all_results(self):
-        wm = WeightMap(weights={"replicas": 2.0}, default_weight=1.0)
+# ---------------------------------------------------------------------------
+# TestTotalWeight
+# ---------------------------------------------------------------------------
+
+class TestTotalWeight:
+    def test_empty_list_returns_zero(self):
+        assert total_weight([]) == 0.0
+
+    def test_sums_weights_correctly(self):
         results = [
-            _make("svc-a", {"replicas": {}}),
-            _make("svc-b", {"replicas": {}}),
+            WeighedResult(service="s", field="a", weight=2.0, kind="changed"),
+            WeighedResult(service="s", field="b", weight=3.5, kind="missing"),
         ]
-        report = weigh_results(results, wm)
-        assert report.total_score() == 4.0
+        assert total_weight(results) == pytest.approx(5.5)
 
-    def test_top_returns_highest_scored_first(self):
-        wm = WeightMap(weights={"replicas": 5.0, "image": 1.0})
-        results = [
-            _make("low", {"image": {}}),
-            _make("high", {"replicas": {}}),
-        ]
-        report = weigh_results(results, wm)
-        top = report.top(1)
-        assert top[0].service == "high"
-
-    def test_drifted_fields_recorded(self):
-        wm = WeightMap(weights={"env": 2.0})
-        r = _make("svc-e", {"env": {"expected": "prod", "actual": "staging"}})
-        report = weigh_results([r], wm)
-        assert "env" in report.results[0].drifted_fields
+    def test_to_dict_contains_all_keys(self):
+        wr = WeighedResult(service="svc", field="replicas", weight=1.5, kind="changed")
+        d = wr.to_dict()
+        assert set(d.keys()) == {"service", "field", "weight", "kind"}

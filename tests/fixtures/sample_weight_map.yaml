@@ -1,0 +1,7 @@
+# Sample weight map for drift scorer tests
+default: 1.0
+weights:
+  replicas: 2.0
+  image: 3.0
+  env: 1.5
+  resources: 2.5
