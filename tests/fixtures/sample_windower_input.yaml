@@ -1,0 +1,19 @@
+# sample input for windower integration tests
+# each entry represents a drift-check result for one service
+results:
+  - service: auth-service
+    drifted: false
+  - service: payment-service
+    drifted: true
+  - service: notification-service
+    drifted: false
+  - service: inventory-service
+    drifted: true
+  - service: shipping-service
+    drifted: true
+  - service: reporting-service
+    drifted: false
+
+window_config:
+  size: 3
+  step: 2
