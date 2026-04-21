@@ -1,0 +1,23 @@
+# Sample input for cutter integration tests
+results:
+  - service: auth-service
+    diffs:
+      - field: env_host
+        expected: auth.internal
+        actual: auth.external
+      - field: db_port
+        expected: "5432"
+        actual: "5433"
+      - field: env_timeout
+        expected: "30"
+        actual: "60"
+  - service: billing-service
+    diffs:
+      - field: env_region
+        expected: us-east-1
+        actual: us-west-2
+      - field: log_level
+        expected: info
+        actual: debug
+  - service: gateway-service
+    diffs: []
