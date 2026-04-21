@@ -1,0 +1,39 @@
+# Fixture for scorer_comparator integration tests.
+# Two snapshots of scored results: 'previous' and 'current'.
+previous:
+  - service: auth-service
+    score: 1.0
+    diffs: []
+  - service: payments-service
+    score: 4.0
+    diffs:
+      - field: timeout
+        expected: "10"
+        actual: "30"
+        kind: changed
+  - service: legacy-service
+    score: 6.0
+    diffs:
+      - field: replicas
+        expected: "3"
+        actual: "1"
+        kind: changed
+
+current:
+  - service: auth-service
+    score: 3.0
+    diffs:
+      - field: memory_limit
+        expected: "512Mi"
+        actual: "256Mi"
+        kind: changed
+  - service: payments-service
+    score: 1.0
+    diffs: []
+  - service: reporting-service
+    score: 2.0
+    diffs:
+      - field: cpu_request
+        expected: "100m"
+        actual: "50m"
+        kind: changed
