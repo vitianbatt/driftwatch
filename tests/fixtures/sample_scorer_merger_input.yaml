@@ -1,0 +1,59 @@
+# Sample input for scorer_merger integration tests
+# Two sets of scored results to be merged.
+
+primary:
+  - service: auth-service
+    score: 0.0
+    drifted_fields: []
+    diffs: []
+
+  - service: billing-service
+    score: 5.0
+    drifted_fields:
+      - replicas
+      - memory_limit
+    diffs:
+      - field: replicas
+        kind: changed
+        expected: "3"
+        actual: "1"
+      - field: memory_limit
+        kind: changed
+        expected: "512Mi"
+        actual: "256Mi"
+
+  - service: gateway-service
+    score: 3.0
+    drifted_fields:
+      - env
+    diffs:
+      - field: env
+        kind: missing
+        expected: production
+        actual: null
+
+secondary:
+  - service: auth-service
+    score: 0.0
+    drifted_fields: []
+    diffs: []
+
+  - service: billing-service
+    score: 2.0
+    drifted_fields:
+      - replicas
+    diffs:
+      - field: replicas
+        kind: changed
+        expected: "3"
+        actual: "1"
+
+  - service: payments-service
+    score: 4.0
+    drifted_fields:
+      - timeout
+    diffs:
+      - field: timeout
+        kind: changed
+        expected: "30s"
+        actual: "10s"
