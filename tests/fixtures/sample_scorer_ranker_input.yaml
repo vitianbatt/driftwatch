@@ -1,0 +1,34 @@
+# sample input for scorer_ranker integration tests
+results:
+  - service: auth-service
+    score: 7.5
+    has_drift: true
+    diffs:
+      - field: replicas
+        kind: changed
+        expected: "3"
+        actual: "1"
+  - service: billing-service
+    score: 0.0
+    has_drift: false
+    diffs: []
+  - service: gateway
+    score: 12.0
+    has_drift: true
+    diffs:
+      - field: image_tag
+        kind: changed
+        expected: "v2.1"
+        actual: "v1.9"
+      - field: memory_limit
+        kind: missing
+        expected: "512Mi"
+        actual: ""
+  - service: worker
+    score: 3.0
+    has_drift: true
+    diffs:
+      - field: env_var
+        kind: extra
+        expected: ""
+        actual: "DEBUG=true"
