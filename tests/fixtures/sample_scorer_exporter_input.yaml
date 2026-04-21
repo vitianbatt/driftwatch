@@ -1,0 +1,26 @@
+# Sample input for scorer_exporter integration tests
+results:
+  - service: auth-service
+    score: 7.5
+    has_drift: true
+    diffs:
+      - field: replicas
+        expected: "3"
+        actual: "1"
+        kind: changed
+      - field: image_tag
+        expected: "v1.2.0"
+        actual: "v1.1.9"
+        kind: changed
+  - service: billing-service
+    score: 0.0
+    has_drift: false
+    diffs: []
+  - service: gateway
+    score: 3.0
+    has_drift: true
+    diffs:
+      - field: timeout
+        expected: "30"
+        actual: "60"
+        kind: changed
