@@ -1,0 +1,26 @@
+# Sample input for scorer aggregator integration tests
+results:
+  - service: auth-service
+    score: 0.0
+    diffs: []
+  - service: payment-service
+    score: 6.0
+    diffs:
+      - field: timeout
+        kind: changed
+        expected: "30s"
+        actual: "60s"
+      - field: replicas
+        kind: missing
+        expected: "3"
+        actual: null
+  - service: notification-service
+    score: 3.0
+    diffs:
+      - field: log_level
+        kind: changed
+        expected: "info"
+        actual: "debug"
+  - service: gateway-service
+    score: 0.0
+    diffs: []
